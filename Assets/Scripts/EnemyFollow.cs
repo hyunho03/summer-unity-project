@@ -1,38 +1,46 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody2D), typeof(SpriteRenderer))]
-public class EnemyFollow : MonoBehaviour
+[RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
+public class EnemyFollow : MonoBehaviour, IDamageable
 {
+    [Header("Movement Settings")]
     public Transform target;
     public float speed = 2f;
 
+    [Header("Health Settings")]
+    [SerializeField] private int maxHealth = 3;
+    private int currentHealth;
+
     private Rigidbody2D rb;
-    private SpriteRenderer spriteRenderer;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        currentHealth = maxHealth;
 
         if (target == null)
         {
-            GameObject player = GameObject.FindGameObjectWithTag("Player");
-            if (player != null)
-                target = player.transform;
+            var player = GameObject.FindGameObjectWithTag("Player");
+            if (player != null) target = player.transform;
         }
     }
 
     void FixedUpdate()
     {
         if (target == null) return;
+        Vector2 dir = ((Vector2)target.position - rb.position).normalized;
+        rb.MovePosition(rb.position + dir * speed * Time.fixedDeltaTime);
+    }
 
-        Vector2 direction = ((Vector2)target.position - rb.position).normalized;
-        Vector2 newPosition = rb.position + direction * speed * Time.fixedDeltaTime;
+    public void TakeDamage(int amount)
+    {
+        currentHealth -= amount;
+        Debug.Log($"{name} took {amount} dmg ({currentHealth}/{maxHealth})");
+        if (currentHealth <= 0) Die();
+    }
 
-        rb.MovePosition(newPosition);
-
-        // ➤ 왼쪽/오른쪽 반전
-        if (direction.x != 0)
-            spriteRenderer.flipX = direction.x < 0;
+    private void Die()
+    {
+        Destroy(gameObject);
     }
 }
