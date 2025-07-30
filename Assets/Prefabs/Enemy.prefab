@@ -132,6 +132,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 0}
   speed: 2
+  separationRadius: 1
+  separationStrength: 1
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  spriteFacingLeft: {fileID: 444664154, guid: aa4785ba3bf88864b9167feefe05a72b, type: 3}
+  spriteFacingRight: {fileID: -859021125, guid: aa4785ba3bf88864b9167feefe05a72b, type: 3}
   maxHealth: 10
 --- !u!60 &-4447669719804931942
 PolygonCollider2D:
