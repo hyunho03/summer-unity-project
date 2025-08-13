@@ -14,10 +14,10 @@ TagManager:
   - Background
   - Water
   - UI
-  - 
-  - 
+  - Player
   - Enemy
-  - 
+  - Obstacle_PlayerOnly
+  - Obstacle_All
   - 
   - 
   - 
