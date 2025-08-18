@@ -1,6 +1,5 @@
 using System.Collections;
 using UnityEngine;
-using UnityEditor;
 
 public class EnemyFlameShooter : MonoBehaviour
 {
@@ -17,10 +16,13 @@ public class EnemyFlameShooter : MonoBehaviour
     public float startDelay = 1f;         // 첫 발사 지연
 
     private SpriteRenderer sr;
+    private Vector3 mouthDefaultLocalPos; // 입의 원래 위치 저장
 
     void Awake()
     {
         sr = GetComponent<SpriteRenderer>();
+        if (mouth != null)
+            mouthDefaultLocalPos = mouth.localPosition; // 시작 위치 기억
     }
 
     void Start()
@@ -38,9 +40,17 @@ public class EnemyFlameShooter : MonoBehaviour
 
         // 🔹 방향 전환 (플레이어 위치에 따라 flipX)
         if (player.position.x < transform.position.x)
+        {
             sr.flipX = true;   // 왼쪽 바라보기
+            if (mouth != null)
+                mouth.localPosition = new Vector3(-Mathf.Abs(mouthDefaultLocalPos.x), mouthDefaultLocalPos.y, mouthDefaultLocalPos.z);
+        }
         else
+        {
             sr.flipX = false;  // 오른쪽 바라보기
+            if (mouth != null)
+                mouth.localPosition = new Vector3(Mathf.Abs(mouthDefaultLocalPos.x), mouthDefaultLocalPos.y, mouthDefaultLocalPos.z);
+        }
     }
 
     IEnumerator ShootLoop()

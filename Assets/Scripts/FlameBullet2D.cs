@@ -30,11 +30,17 @@ public class FlameBullet2D : MonoBehaviour
         Destroy(gameObject, life);
     }
 
-    // 🎯 EnemyFlameShooter나 MouthShooter에서 호출하는 초기화 함수
+    // 🎯 EnemyFlameShooter에서 호출
     public void Init(Vector2 direction)
     {
         if (rb == null) rb = GetComponent<Rigidbody2D>();
+
+        // 불꽃 이동
         rb.linearVelocity = direction.normalized * speed;
+
+        // 🔥 불꽃 스프라이트 회전 (방향에 맞게)
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(0, 0, angle);
     }
 
     void OnTriggerEnter2D(Collider2D other)
