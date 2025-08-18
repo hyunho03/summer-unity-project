@@ -4,12 +4,16 @@ public class EnemySpawner : MonoBehaviour
 {
     public GameObject enemyPrefab;
     public Transform player;
-    public float spawnInterval = 1f;
-    public float spawnDistance = 5f;
-    public int maxEnemiesInField = 20; // 동시에 존재할 수 있는 최대 적 수
+    public float spawnInterval = 1f;     // 1초 간격
+    public float spawnDistance = 5f;     // 플레이어로부터 떨어진 거리
+
+    // ★ 추가: 총합 제한
+    public int maxTotalEnemies = 5;  // 총합 스폰 한도 -> 이거 고치면 돼 얘뜰아
+    private int totalSpawned = 0;     // 지금까지 스폰된 총합
 
     void Start()
     {
+        // 첫 생성 1초 지연 → 그 뒤로 매 1초마다 반복
         InvokeRepeating(nameof(SpawnEnemy), 1f, spawnInterval);
     }
 
@@ -17,11 +21,14 @@ public class EnemySpawner : MonoBehaviour
     {
         if (enemyPrefab == null || player == null) return;
 
-        // 현재 씬에 있는 적 수 확인
-        int currentEnemies = GameObject.FindGameObjectsWithTag("Enemy").Length;
-        if (currentEnemies >= maxEnemiesInField) return;
+        // ★ 추가: 총합 30마리면 더 이상 스폰하지 않음
+        if (totalSpawned >= maxTotalEnemies)
+        {
+            CancelInvoke(nameof(SpawnEnemy));
+            return;
+        }
 
-        // 사방(대각 포함) 중 하나 방향 선택
+        // 🔁 사방(대각 포함) 중 하나 방향 선택
         Vector2[] directions = {
             Vector2.up,
             Vector2.down,
@@ -38,5 +45,8 @@ public class EnemySpawner : MonoBehaviour
 
         GameObject enemy = Instantiate(enemyPrefab, spawnPos, Quaternion.identity);
         enemy.GetComponent<EnemyFollow>().target = player;
+
+        // ★ 추가: 총합 카운트 증가
+        totalSpawned++;
     }
 }
