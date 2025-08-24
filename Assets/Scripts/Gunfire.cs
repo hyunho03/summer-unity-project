@@ -70,4 +70,11 @@ public class GunFire : MonoBehaviour
         else
             Debug.LogWarning("Bullet prefab missing Bullet component.");
     }
+
+    public void IncreaseBulletDamage(int amount)
+    {
+        bulletDamage += amount;
+        Debug.Log("총알 데미지 증가! 현재 데미지: " + bulletDamage);
+    }
+
 }

@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.UI;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D), typeof(SpriteRenderer))]
 public class EnemyFollow : MonoBehaviour, IDamageable
@@ -21,19 +20,13 @@ public class EnemyFollow : MonoBehaviour, IDamageable
     [SerializeField] private int maxHealth = 3;
     private int currentHealth;
 
-    [Header("Player HP & GameOver")]
-    public RectTransform expBar; 
-    public RectTransform hpBar;  
-    public GameObject gameOverUI;
-
     [Header("Damage Settings")]
-    public float damageInterval = 1f; // 데미지 주기 (초)
-    public float damageAmount = 20f;  // 🎯 적이 주는 데미지 (HP바 width 단위)
+    public float damageInterval = 1f; // 플레이어 공격 주기
+    public float damageAmount = 20f;  // 플레이어에게 주는 데미지
 
     private Rigidbody2D rb;
     private SpriteRenderer sr;
 
-    // 충돌 상태 & 데미지 타이머
     private bool isTouchingPlayer = false;
     private float damageTimer = 0f;
 
@@ -47,22 +40,22 @@ public class EnemyFollow : MonoBehaviour, IDamageable
     {
         currentHealth = maxHealth;
 
+        // 타겟 자동 할당 (Player 태그)
         if (target == null)
         {
             var player = GameObject.FindGameObjectWithTag("Player");
             if (player != null) target = player.transform;
         }
-
-        if (gameOverUI != null)
-            gameOverUI.SetActive(false);
     }
 
     void FixedUpdate()
     {
         if (target == null) return;
 
+        // === 플레이어를 향해 이동 ===
         Vector2 toPlayer = ((Vector2)target.position - rb.position).normalized;
 
+        // Separation (적들끼리 겹치지 않도록 밀어내기)
         Vector2 separation = Vector2.zero;
         Collider2D[] hits = Physics2D.OverlapCircleAll(rb.position, separationRadius, enemyLayer);
         foreach (var hit in hits)
@@ -81,6 +74,7 @@ public class EnemyFollow : MonoBehaviour, IDamageable
 
         UpdateSpriteDirection();
 
+        // === 플레이어 접촉 시 데미지 주기 ===
         if (isTouchingPlayer)
         {
             damageTimer += Time.fixedDeltaTime;
@@ -95,13 +89,10 @@ public class EnemyFollow : MonoBehaviour, IDamageable
     void UpdateSpriteDirection()
     {
         if (sr == null || target == null) return;
-
-        if (transform.position.x < target.position.x)
-            sr.sprite = spriteFacingRight;
-        else
-            sr.sprite = spriteFacingLeft;
+        sr.sprite = (transform.position.x < target.position.x) ? spriteFacingRight : spriteFacingLeft;
     }
 
+    // === 적이 피해 입음 ===
     public void TakeDamage(int amount)
     {
         currentHealth -= amount;
@@ -109,22 +100,21 @@ public class EnemyFollow : MonoBehaviour, IDamageable
 
         if (currentHealth <= 0)
         {
-            if (expBar != null)
-            {
-                Vector2 size = expBar.sizeDelta;
-                size.x += 50f;
-                expBar.sizeDelta = size;
-            }
+            // ✅ PlayerStats에 경험치 지급
+            PlayerStats ps = target.GetComponent<PlayerStats>();
+            if (ps != null) ps.GainExp(20f); // 죽으면 20 경험치 지급
+
             Destroy(gameObject);
         }
     }
 
+    // === 플레이어 충돌 감지 ===
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
         {
             isTouchingPlayer = true;
-            damageTimer = damageInterval; // 첫 부딪힘에 바로 데미지
+            damageTimer = damageInterval; // 첫 충돌 즉시 데미지
         }
     }
 
@@ -140,26 +130,19 @@ public class EnemyFollow : MonoBehaviour, IDamageable
             isTouchingPlayer = false;
     }
 
-    // 🎯 플레이어 HP 감소 + 게임 오버 체크
+    // === 플레이어에게 데미지 적용 ===
     private void ApplyPlayerDamage()
     {
-        if (hpBar != null)
-        {
-            Vector2 size = hpBar.sizeDelta;
-            size.x -= damageAmount; // ✅ 고정값 20 대신 damageAmount 사용
-            hpBar.sizeDelta = size;
+        if (target == null) return;
 
-            if (size.x <= 0)
-            {
-                size.x = 0;
-                hpBar.sizeDelta = size;
-                if (gameOverUI != null)
-                    gameOverUI.SetActive(true);
-                Time.timeScale = 0f;
-            }
+        PlayerStats ps = target.GetComponent<PlayerStats>();
+        if (ps != null)
+        {
+            ps.TakeDamage(damageAmount);
         }
     }
 
+    // === Scene 뷰에서 Separation 범위 확인용 Gizmo ===
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
