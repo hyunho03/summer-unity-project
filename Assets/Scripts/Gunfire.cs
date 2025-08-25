@@ -76,5 +76,10 @@ public class GunFire : MonoBehaviour
         bulletDamage += amount;
         Debug.Log("총알 데미지 증가! 현재 데미지: " + bulletDamage);
     }
+    public void DecreaseReroading(float percent)
+    {
+        fireCooldown*= (1f - percent);
+        Debug.Log("장전시간 감소! 현재 장전시간: " + fireCooldown);
+    }
 
 }

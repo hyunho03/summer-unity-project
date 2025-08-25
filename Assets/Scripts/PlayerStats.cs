@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using TMPro;
 public class PlayerStats : MonoBehaviour
 {
     [Header("Stats")]
@@ -8,7 +8,7 @@ public class PlayerStats : MonoBehaviour
     public float moveSpeed = 5f;
     public float maxHP = 100f;
     public float defense = 0f;
-    public int grenadeCount = 1;
+    public int grenadeCount = 3;
     public float reloadSpeed = 1f;
 
     [Header("Leveling")]
@@ -19,6 +19,7 @@ public class PlayerStats : MonoBehaviour
     public RectTransform hpBar;
     public RectTransform expBar;
     public GameObject gameOverUI;
+    public TextMeshProUGUI grenadeText; //UI텍스트 추가
 
     private float currentHP;
 
@@ -41,6 +42,12 @@ public class PlayerStats : MonoBehaviour
 
         UpdateHPUI();
         UpdateExpUI();
+        UpdateGrenadeUI();
+    }
+    public void UpdateGrenadeUI()
+    {
+        if (grenadeText != null)
+            grenadeText.text = $"X {grenadeCount}";
     }
 
     // === 경험치 획득 ===
@@ -106,10 +113,24 @@ public class PlayerStats : MonoBehaviour
             expBar.sizeDelta = new Vector2(ratio * expBarMaxWidth, expBar.sizeDelta.y);
         }
     }
-
+    
     // === 레벨업 보상용 함수들 ===
     public void IncreaseAttack(float value) => attackPower += value;
     public void ReduceIncomingDamage(float value) => defense += value;
     public void ReduceReloadTime(float percent) => reloadSpeed *= (1f - percent);
     public void IncreaseGrenade(int amount) => grenadeCount += amount;
+ public void IncreaseHealth(float value)
+{
+    maxHP += value;
+
+    // 현재 체력도 같이 늘려서 비율 유지
+    currentHP += value;
+
+    // currentHP가 maxHP보다 클 경우 보정
+    if (currentHP > maxHP)
+        currentHP = maxHP;
+
+    UpdateHPUI();
+}
+
 }
