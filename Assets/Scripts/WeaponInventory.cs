@@ -8,21 +8,21 @@ public class WeaponInventory : MonoBehaviour
 
     void Start()
     {
-        // ½ÃÀÛÇÒ ¶§ ±âº» ¹«±â(±ÇÃÑ)¸¸ È°¼ºÈ­
-        SelectWeapon(0);
+        //ì²˜ìŒì— ë¼ì´í”Œë¡œ ì‹œì‘
+        SelectWeapon(1);
     }
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))
-            SelectWeapon(0);   // 0 ¡æ pistol
+            SelectWeapon(0);   // 0 ï¿½ï¿½ pistol
         else if (Input.GetKeyDown(KeyCode.Alpha2))
-            SelectWeapon(1);   // 1 ¡æ rifle
+            SelectWeapon(1);   // 1 ï¿½ï¿½ rifle
     }
 
     private void SelectWeapon(int idx)
     {
-        // idx == 0 ÀÌ¸é pistol¸¸, idx == 1 ÀÌ¸é rifle¸¸ È°¼ºÈ­
+        // idx == 0 ï¿½Ì¸ï¿½ pistolï¿½ï¿½, idx == 1 ï¿½Ì¸ï¿½ rifleï¿½ï¿½ È°ï¿½ï¿½È­
         pistol.SetActive(idx == 0);
         rifle.SetActive(idx == 1);
     }

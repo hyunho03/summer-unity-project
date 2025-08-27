@@ -1,13 +1,5 @@
 fileFormatVersion: 2
-guid: 5f145e6952bc4ef40889f9ab87561977
-AssetOrigin:
-  serializedVersion: 1
-  productId: 312497
-  packageName: Pixel Art Character Package
-  packageVersion: 1.0
-  assetPath: Assets/GDD - Quinnipiac/Pixel Art Character Package/Weapons/Rattles
-    Weapon/Spritesheets/Rattles Turquoise Projectile.png
-  uploadId: 746928
+guid: 35a862a6df8ef734b8eb793867a30e39
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -56,7 +48,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 35
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -114,43 +106,17 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: Android
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: iOS
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Rattles Turquoise Projectile_0
+      name: Rattles walk 2-sheet_0
       rect:
         serializedVersion: 2
-        x: 28
-        y: 156
-        width: 48
-        height: 112
+        x: 42
+        y: 0
+        width: 126
+        height: 210
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -159,20 +125,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9750d23e51d959244b2433fd98d373cb
-      internalID: 1855300093
+      spriteID: e57af92074d67854b9f97eda21134fa9
+      internalID: 1083128716
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Rattles Turquoise Projectile_1
+      name: Rattles walk 2-sheet_1
       rect:
         serializedVersion: 2
-        x: 192
-        y: 128
-        width: 116
-        height: 112
+        x: 246
+        y: 0
+        width: 138
+        height: 204
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -181,20 +147,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 715ca5612232cdb44ad7769fcbcb3ca4
-      internalID: 349819553
+      spriteID: 1606076fedce782499333729d4489a94
+      internalID: -149725701
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Rattles Turquoise Projectile_2
+      name: Rattles walk 2-sheet_2
       rect:
         serializedVersion: 2
-        x: 348
-        y: 16
-        width: 116
-        height: 132
+        x: 462
+        y: 0
+        width: 126
+        height: 210
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -203,20 +169,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 625481d4d7b26d24890a248fa42d2b1f
-      internalID: 2062872937
+      spriteID: 8ab630ade1e76e240b8eebd0ea551ba4
+      internalID: -1083262472
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Rattles Turquoise Projectile_3
+      name: Rattles walk 2-sheet_3
       rect:
         serializedVersion: 2
-        x: 564
-        y: 40
-        width: 36
-        height: 52
+        x: 666
+        y: 0
+        width: 138
+        height: 204
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -225,8 +191,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1d7a51d711c5eb74ca59aa77376c16e4
-      internalID: 1139613699
+      spriteID: 94e31708e1152d2468b209acc7958800
+      internalID: 824485865
       vertices: []
       indices: 
       edges: []
@@ -235,7 +201,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 7b13d55c8f92c674ca1e8bddb2c5b2d4
+    spriteID: 52559f117a1bd7442bf954dd4fd63063
     internalID: 0
     vertices: []
     indices: 
@@ -245,10 +211,10 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Rattles Turquoise Projectile_0: 1855300093
-      Rattles Turquoise Projectile_1: 349819553
-      Rattles Turquoise Projectile_2: 2062872937
-      Rattles Turquoise Projectile_3: 1139613699
+      Rattles walk 2-sheet_0: 1083128716
+      Rattles walk 2-sheet_1: -149725701
+      Rattles walk 2-sheet_2: -1083262472
+      Rattles walk 2-sheet_3: 824485865
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
