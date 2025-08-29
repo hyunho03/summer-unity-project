@@ -1,13 +1,13 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI; // ✅ UI 제어 위해 필요
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D), typeof(SpriteRenderer))]
 public class BossWalking : MonoBehaviour, IDamageable
 {
     [Header("Movement Settings")]
-
     public Transform target;
-    public float speed = 2.5f;
+    public float speed = 2f;
 
     [Header("Separation Settings")]
     public float separationRadius = 0.5f;
@@ -19,12 +19,17 @@ public class BossWalking : MonoBehaviour, IDamageable
     public Sprite spriteFacingRight;
 
     [Header("Enemy Health Settings")]
-    [SerializeField] private int maxHealth = 3;
+    [SerializeField] private int maxHealth = 100;
+    public int MaxHealth => maxHealth;
     private int currentHealth;
 
     [Header("Damage Settings")]
-    public float damageInterval = 1f; // 플레이어 공격 주기
-    public float damageAmount = 15f;  // 플레이어에게 주는 데미지
+    public float damageInterval = 1f; 
+    public float damageAmount = 20f;  
+
+    [Header("UI Settings")]
+    public GameObject bossHpUI;   // Canvas 안의 BossHPBar (전체 오브젝트)
+    public Slider bossHpSlider;   // Slider 컴포넌트 (실제 체력 게이지)
 
     private Rigidbody2D rb;
     private SpriteRenderer sr;
@@ -32,47 +37,54 @@ public class BossWalking : MonoBehaviour, IDamageable
     private bool isTouchingPlayer = false;
     private float damageTimer = 0f;
 
-
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
-        // if (hand != null)
-        //     handDefaultLocalPos = hand.localPosition; // 시작 위치 기억
     }
 
     void Start()
-    {
-        currentHealth = maxHealth;
+{
+    currentHealth = maxHealth;
 
-        // 타겟 자동 할당 (Player 태그)
-        if (target == null)
-        {
-            var player = GameObject.FindGameObjectWithTag("Player");
-            if (player != null) target = player.transform;
-        }
+    // 타겟 자동 할당
+    if (target == null)
+    {
+        var player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null) target = player.transform;
     }
+
+    // ✅ UI 자동 연결 (씬에 있는 BossHPBar 찾아오기)
+    if (bossHpUI == null)
+        bossHpUI = GameObject.Find("BossHPBar"); // Hierarchy 이름 기준
+
+    if (bossHpUI != null)
+        bossHpUI.SetActive(true);
+
+    if (bossHpSlider == null && bossHpUI != null)
+        bossHpSlider = bossHpUI.GetComponent<Slider>();
+
+    if (bossHpSlider != null)
+    {
+        bossHpSlider.maxValue = maxHealth;
+        bossHpSlider.value = currentHealth;
+    }
+}
+
+
     void FixedUpdate()
     {
         if (target == null) return;
 
         // === 플레이어를 향해 이동 ===
         Vector2 toPlayer = ((Vector2)target.position - rb.position).normalized;
-        
-        if (target.position.x < transform.position.x)
-        {
-            sr.flipX = true;   // 왼쪽 바라보기
-            // if (hand != null)
-            //     hand.localPosition = new Vector3(-Mathf.Abs(handDefaultLocalPos.x), handDefaultLocalPos.y, handDefaultLocalPos.z);
-        }
-        else
-        {
-            sr.flipX = false;  // 오른쪽 바라보기
-            // if (hand != null)
-            //     hand.localPosition = new Vector3(Mathf.Abs(handDefaultLocalPos.x), handDefaultLocalPos.y, handDefaultLocalPos.z);
-        }
 
-        // Separation (적들끼리 겹치지 않도록 밀어내기)
+        if (target.position.x < transform.position.x)
+            sr.flipX = true;
+        else
+            sr.flipX = false;
+
+        // Separation (적들끼리 겹치지 않도록)
         Vector2 separation = Vector2.zero;
         Collider2D[] hits = Physics2D.OverlapCircleAll(rb.position, separationRadius, enemyLayer);
         foreach (var hit in hits)
@@ -80,8 +92,7 @@ public class BossWalking : MonoBehaviour, IDamageable
             if (hit.transform == transform) continue;
             Vector2 diff = rb.position - (Vector2)hit.transform.position;
             float dist = diff.magnitude;
-            if (dist > 0)
-                separation += diff.normalized / dist;
+            if (dist > 0) separation += diff.normalized / dist;
         }
 
         Vector2 moveDir = toPlayer + separation * separationStrength;
@@ -115,12 +126,12 @@ public class BossWalking : MonoBehaviour, IDamageable
         currentHealth -= amount;
         Debug.Log($"{name} took {amount} dmg ({currentHealth}/{maxHealth})");
 
+        // HP UI 반영
+        if (bossHpSlider != null) bossHpSlider.value = currentHealth;
+
         if (currentHealth <= 0)
         {
-            // ✅ PlayerStats에 경험치 지급
-            PlayerStats ps = target.GetComponent<PlayerStats>();
-            if (ps != null) ps.GainExp(20f); // 죽으면 20 경험치 지급
-
+            if (bossHpUI != null) bossHpUI.SetActive(false); // UI 끄기
             Destroy(gameObject);
         }
     }
@@ -131,7 +142,7 @@ public class BossWalking : MonoBehaviour, IDamageable
         if (collision.gameObject.CompareTag("Player"))
         {
             isTouchingPlayer = true;
-            damageTimer = damageInterval; // 첫 충돌 즉시 데미지
+            damageTimer = damageInterval;
         }
     }
 
@@ -147,7 +158,6 @@ public class BossWalking : MonoBehaviour, IDamageable
             isTouchingPlayer = false;
     }
 
-    // === 플레이어에게 데미지 적용 ===
     private void ApplyPlayerDamage()
     {
         if (target == null) return;
@@ -159,7 +169,6 @@ public class BossWalking : MonoBehaviour, IDamageable
         }
     }
 
-    // === Scene 뷰에서 Separation 범위 확인용 Gizmo ===
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
