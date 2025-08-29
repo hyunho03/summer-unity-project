@@ -17,12 +17,12 @@ public class EnemyFollow : MonoBehaviour, IDamageable
     public Sprite spriteFacingRight;
 
     [Header("Enemy Health Settings")]
-    [SerializeField] private int maxHealth = 3;
+    [SerializeField] private int maxHealth = 5;
     private int currentHealth;
 
     [Header("Damage Settings")]
     public float damageInterval = 1f; // 플레이어 공격 주기
-    public float damageAmount = 20f;  // 플레이어에게 주는 데미지
+    public float damageAmount = 10f;  // 플레이어에게 주는 데미지
 
     private Rigidbody2D rb;
     private SpriteRenderer sr;

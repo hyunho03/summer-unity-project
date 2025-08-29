@@ -4,7 +4,7 @@ public class FlameBullet2D : MonoBehaviour
 {
     public float speed = 7f;
     public float life = 2f;
-    public float damageAmount = 20f;
+    public float damageAmount = 12f;
 
     private Rigidbody2D rb;
     private RectTransform hpBar;

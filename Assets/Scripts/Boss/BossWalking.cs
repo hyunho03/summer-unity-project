@@ -7,7 +7,7 @@ public class BossWalking : MonoBehaviour, IDamageable
     [Header("Movement Settings")]
 
     public Transform target;
-    public float speed = 2f;
+    public float speed = 2.5f;
 
     [Header("Separation Settings")]
     public float separationRadius = 0.5f;
@@ -24,7 +24,7 @@ public class BossWalking : MonoBehaviour, IDamageable
 
     [Header("Damage Settings")]
     public float damageInterval = 1f; // 플레이어 공격 주기
-    public float damageAmount = 20f;  // 플레이어에게 주는 데미지
+    public float damageAmount = 15f;  // 플레이어에게 주는 데미지
 
     private Rigidbody2D rb;
     private SpriteRenderer sr;

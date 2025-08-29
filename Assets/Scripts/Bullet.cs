@@ -6,7 +6,7 @@ public class Bullet : MonoBehaviour
     [Tooltip("총알이 살아 있는 시간 (초)")]
     public float lifeTime = 2f;
     [Tooltip("이 총알이 입히는 데미지")]
-    public int damage = 1;
+    public int damage = 3;
 
     void Start()
     {

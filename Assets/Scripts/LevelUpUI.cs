@@ -28,7 +28,7 @@ public class LevelUpUI : MonoBehaviour
         damageButton.onClick.RemoveAllListeners();
         damageButton.onClick.AddListener(() =>
         {
-            player.IncreaseAttack(5f);
+            player.IncreaseAttack(3f);
             CloseUI();
         });
 
@@ -49,7 +49,7 @@ public class LevelUpUI : MonoBehaviour
         reroadButton.onClick.RemoveAllListeners();
         reroadButton.onClick.AddListener(() =>
         {
-            player.ReduceReloadTime(0.7f);   // 재장전 속도 10%씩 줄이기
+            player.ReduceReloadTime(0.9f);   // 재장전 속도 10%씩 줄이기
             CloseUI();
         });
     }

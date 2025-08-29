@@ -8,7 +8,7 @@ public class GunFire : MonoBehaviour
     [SerializeField] private float bulletSpeed = 10f;
 
     [Header("Damage Settings")]
-    [SerializeField] private int bulletDamage = 1;
+    [SerializeField] private int bulletDamage = 3;
 
     [Header("Fire Rate")]
     [SerializeField] private float fireCooldown = 0.2f;
