@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UI; // ✅ UI 제어 위해 필요
+using UnityEngine.UI;
+using System; // ✅ 이벤트 사용을 위해 필요
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D), typeof(SpriteRenderer))]
 public class BossWalking : MonoBehaviour, IDamageable
@@ -28,14 +29,17 @@ public class BossWalking : MonoBehaviour, IDamageable
     public float damageAmount = 20f;  
 
     [Header("UI Settings")]
-    public GameObject bossHpUI;   // Canvas 안의 BossHPBar (전체 오브젝트)
-    public Slider bossHpSlider;   // Slider 컴포넌트 (실제 체력 게이지)
+    public GameObject bossHpUI;   // Canvas 안의 BossHPBar
+    public Slider bossHpSlider;   // 체력바 Slider
 
     private Rigidbody2D rb;
     private SpriteRenderer sr;
 
     private bool isTouchingPlayer = false;
     private float damageTimer = 0f;
+
+    // ✅ 보스 사망 이벤트 (외부 UI 매니저에서 구독 가능)
+    public static event Action BossDied;
 
     void Awake()
     {
@@ -44,47 +48,42 @@ public class BossWalking : MonoBehaviour, IDamageable
     }
 
     void Start()
-{
-    currentHealth = maxHealth;
-
-    // 타겟 자동 할당
-    if (target == null)
     {
-        var player = GameObject.FindGameObjectWithTag("Player");
-        if (player != null) target = player.transform;
+        currentHealth = maxHealth;
+
+        // 타겟 자동 할당
+        if (target == null)
+        {
+            var player = GameObject.FindGameObjectWithTag("Player");
+            if (player != null) target = player.transform;
+        }
+
+        // HP UI 연결
+        if (bossHpUI == null)
+            bossHpUI = GameObject.Find("BossHPBar");
+
+        if (bossHpUI != null)
+            bossHpUI.SetActive(true);
+
+        if (bossHpSlider == null && bossHpUI != null)
+            bossHpSlider = bossHpUI.GetComponent<Slider>();
+
+        if (bossHpSlider != null)
+        {
+            bossHpSlider.maxValue = maxHealth;
+            bossHpSlider.value = currentHealth;
+        }
     }
-
-    // ✅ UI 자동 연결 (씬에 있는 BossHPBar 찾아오기)
-    if (bossHpUI == null)
-        bossHpUI = GameObject.Find("BossHPBar"); // Hierarchy 이름 기준
-
-    if (bossHpUI != null)
-        bossHpUI.SetActive(true);
-
-    if (bossHpSlider == null && bossHpUI != null)
-        bossHpSlider = bossHpUI.GetComponent<Slider>();
-
-    if (bossHpSlider != null)
-    {
-        bossHpSlider.maxValue = maxHealth;
-        bossHpSlider.value = currentHealth;
-    }
-}
-
 
     void FixedUpdate()
     {
         if (target == null) return;
 
-        // === 플레이어를 향해 이동 ===
+        // === 이동 ===
         Vector2 toPlayer = ((Vector2)target.position - rb.position).normalized;
+        sr.flipX = (target.position.x < transform.position.x);
 
-        if (target.position.x < transform.position.x)
-            sr.flipX = true;
-        else
-            sr.flipX = false;
-
-        // Separation (적들끼리 겹치지 않도록)
+        // Separation
         Vector2 separation = Vector2.zero;
         Collider2D[] hits = Physics2D.OverlapCircleAll(rb.position, separationRadius, enemyLayer);
         foreach (var hit in hits)
@@ -102,7 +101,7 @@ public class BossWalking : MonoBehaviour, IDamageable
 
         UpdateSpriteDirection();
 
-        // === 플레이어 접촉 시 데미지 주기 ===
+        // === 플레이어 충돌 데미지 ===
         if (isTouchingPlayer)
         {
             damageTimer += Time.fixedDeltaTime;
@@ -120,18 +119,21 @@ public class BossWalking : MonoBehaviour, IDamageable
         sr.sprite = (transform.position.x < target.position.x) ? spriteFacingRight : spriteFacingLeft;
     }
 
-    // === 적이 피해 입음 ===
+    // === 데미지 처리 ===
     public void TakeDamage(int amount)
     {
         currentHealth -= amount;
         Debug.Log($"{name} took {amount} dmg ({currentHealth}/{maxHealth})");
 
-        // HP UI 반영
         if (bossHpSlider != null) bossHpSlider.value = currentHealth;
 
         if (currentHealth <= 0)
         {
-            if (bossHpUI != null) bossHpUI.SetActive(false); // UI 끄기
+            if (bossHpUI != null) bossHpUI.SetActive(false);
+
+            // ✅ 보스 사망 이벤트 호출
+            BossDied?.Invoke();
+
             Destroy(gameObject);
         }
     }
@@ -161,12 +163,9 @@ public class BossWalking : MonoBehaviour, IDamageable
     private void ApplyPlayerDamage()
     {
         if (target == null) return;
-
         PlayerStats ps = target.GetComponent<PlayerStats>();
         if (ps != null)
-        {
             ps.TakeDamage(damageAmount);
-        }
     }
 
     void OnDrawGizmosSelected()
