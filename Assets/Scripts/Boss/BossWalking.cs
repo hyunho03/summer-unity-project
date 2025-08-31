@@ -20,7 +20,7 @@ public class BossWalking : MonoBehaviour, IDamageable
     public Sprite spriteFacingRight;
 
     [Header("Enemy Health Settings")]
-    [SerializeField] private int maxHealth = 100;
+    [SerializeField] private int maxHealth = 500;
     public int MaxHealth => maxHealth;
     private int currentHealth;
 

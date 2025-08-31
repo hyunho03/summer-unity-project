@@ -17,12 +17,12 @@ public class EnemyFollow : MonoBehaviour, IDamageable
     public Sprite spriteFacingRight;
 
     [Header("Enemy Health Settings")]
-    [SerializeField] private int maxHealth = 5;
+    [SerializeField] private int maxHealth = 10;
     private int currentHealth;
 
     [Header("Damage Settings")]
     public float damageInterval = 1f; // 플레이어 공격 주기
-    public float damageAmount = 10f;  // 플레이어에게 주는 데미지
+    public float damageAmount = 15f;  // 플레이어에게 주는 데미지
 
     private Rigidbody2D rb;
     private SpriteRenderer sr;
@@ -102,7 +102,7 @@ public class EnemyFollow : MonoBehaviour, IDamageable
         {
             // ✅ PlayerStats에 경험치 지급
             PlayerStats ps = target.GetComponent<PlayerStats>();
-            if (ps != null) ps.GainExp(20f); // 죽으면 20 경험치 지급
+            if (ps != null) ps.GainExp(8f); // 죽으면 20 경험치 지급
 
             Destroy(gameObject);
         }

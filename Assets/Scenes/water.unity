@@ -904,7 +904,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &180599616
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5413,7 +5413,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d322a0de3026f5c48a78f88284fc1d58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 10
+  speed: 8
   idleThreshold: 5
 --- !u!212 &666585666
 SpriteRenderer:
@@ -12087,6 +12087,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1581276835}
     - target: {fileID: 6369968091313841227, guid: 328a0654f11406849b7e5646359ae7e2, type: 3}
+      propertyPath: speed
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6369968091313841227, guid: 328a0654f11406849b7e5646359ae7e2, type: 3}
       propertyPath: expBar
       value: 
       objectReference: {fileID: 561186583}
@@ -12097,6 +12101,10 @@ PrefabInstance:
     - target: {fileID: 6369968091313841227, guid: 328a0654f11406849b7e5646359ae7e2, type: 3}
       propertyPath: playerMaxHP
       value: 765
+      objectReference: {fileID: 0}
+    - target: {fileID: 6369968091313841227, guid: 328a0654f11406849b7e5646359ae7e2, type: 3}
+      propertyPath: damageAmount
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 8525069813003137592, guid: 328a0654f11406849b7e5646359ae7e2, type: 3}
       propertyPath: m_Layer
@@ -13736,7 +13744,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1972098190
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -87198,12 +87206,24 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1581276835}
     - target: {fileID: 9153179587384330130, guid: 79e282517d1650c43ba7fd1fcb4ad10f, type: 3}
+      propertyPath: speed
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 9153179587384330130, guid: 79e282517d1650c43ba7fd1fcb4ad10f, type: 3}
       propertyPath: expBar
       value: 
       objectReference: {fileID: 561186583}
     - target: {fileID: 9153179587384330130, guid: 79e282517d1650c43ba7fd1fcb4ad10f, type: 3}
+      propertyPath: maxHealth
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 9153179587384330130, guid: 79e282517d1650c43ba7fd1fcb4ad10f, type: 3}
       propertyPath: gameOverUI
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 9153179587384330130, guid: 79e282517d1650c43ba7fd1fcb4ad10f, type: 3}
+      propertyPath: damageAmount
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 9153179587384330130, guid: 79e282517d1650c43ba7fd1fcb4ad10f, type: 3}
       propertyPath: spriteFacingRight

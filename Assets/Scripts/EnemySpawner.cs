@@ -8,7 +8,7 @@ public class EnemySpawner : MonoBehaviour
     public float spawnDistance = 5f;     // 플레이어로부터 떨어진 거리
 
     // ★ 추가: 총합 제한
-    public int maxTotalEnemies = 5;  // 총합 스폰 한도 -> 이거 고치면 돼 얘뜰아
+    public int maxTotalEnemies = 30;  // 총합 스폰 한도 -> 이거 고치면 돼 얘뜰아
     private int totalSpawned = 0;     // 지금까지 스폰된 총합
 
     void Start()
@@ -21,7 +21,6 @@ public class EnemySpawner : MonoBehaviour
     {
         if (enemyPrefab == null || player == null) return;
 
-        // ★ 추가: 총합 30마리면 더 이상 스폰하지 않음
         if (totalSpawned >= maxTotalEnemies)
         {
             CancelInvoke(nameof(SpawnEnemy));

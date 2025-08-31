@@ -145,9 +145,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 7
   life: 2
-  damageAmount: 20
-  hpBar: {fileID: 0}
-  gameOverUI: {fileID: 0}
+  damageAmount: 60
 --- !u!212 &-2791373719394983954
 SpriteRenderer:
   m_ObjectHideFlags: 0
