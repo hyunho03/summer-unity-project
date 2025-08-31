@@ -31,15 +31,18 @@ public class PauseManager : MonoBehaviour
     public void TogglePause() => SetPaused(!paused);
 
     public void SetPaused(bool value, bool instant = false)
-    {
-        paused = value;
+{
+    paused = value;
 
-        Time.timeScale = paused ? 0f : 1f;
-        if (pauseAudio) AudioListener.pause = paused;
+    Time.timeScale = paused ? 0f : 1f;
 
-        if (pausePanel) pausePanel.SetActive(paused);
-        if (dimmer)     dimmer.SetActive(paused);
-    }
+    if (pauseAudio) 
+        AudioListener.pause = paused;   // ⬅️ 여기서 true/false 같이 조정됨
+
+    if (pausePanel) pausePanel.SetActive(paused);
+    if (dimmer)     dimmer.SetActive(paused);
+}
+
 
     // ==== 버튼용 ====
     public void OnClickResume()
@@ -52,4 +55,10 @@ public class PauseManager : MonoBehaviour
         SetPaused(false); // 타임스케일 복구
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
+    public void OnClickMainMenu()
+{
+    SetPaused(false);              // 타임스케일, 오디오 정상화
+    SceneManager.LoadScene("Title");
+}
+
 }

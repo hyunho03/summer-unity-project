@@ -133,7 +133,7 @@ public class BossWalking : MonoBehaviour, IDamageable
 
             // ✅ 보스 사망 이벤트 호출
             BossDied?.Invoke();
-
+            FindFirstObjectByType<BGMManager>()?.PlayWinBGM();
             Destroy(gameObject);
         }
     }

@@ -1,5 +1,7 @@
 using UnityEngine;
 using TMPro;
+using System.Collections; // ✅ 코루틴 사용
+
 public class PlayerStats : MonoBehaviour
 {
     [Header("Stats")]
@@ -19,7 +21,11 @@ public class PlayerStats : MonoBehaviour
     public RectTransform hpBar;
     public RectTransform expBar;
     public GameObject gameOverUI;
-    public TextMeshProUGUI grenadeText; //UI텍스트 추가
+    public TextMeshProUGUI grenadeText;
+
+    [Header("Audio")] // 🎵 추가
+    public AudioSource audioSource;   // 데미지 효과음 재생용
+    public AudioClip damageClip;      // 데미지 효과음 클립
 
     private float currentHP;
 
@@ -27,15 +33,21 @@ public class PlayerStats : MonoBehaviour
     private float hpBarMaxWidth;
     private float expBarMaxWidth;
 
+    // ✅ 무적 관련
+    private bool isInvincible = false;
+    public float invincibleDuration = 1.5f;   // 무적 시간
+    public float blinkInterval = 0.2f;        // 깜빡임 간격
+    private SpriteRenderer spriteRenderer;    // 깜빡임 표시용
+
     void Start()
     {
         currentHP = maxHP;
 
         if (hpBar != null)
-            hpBarMaxWidth = hpBar.sizeDelta.x;  // HP바 원래 길이 저장
+            hpBarMaxWidth = hpBar.sizeDelta.x;  
 
         if (expBar != null)
-            expBarMaxWidth = expBar.sizeDelta.x; // EXP바 원래 길이 저장
+            expBarMaxWidth = expBar.sizeDelta.x; 
 
         if (gameOverUI != null)
             gameOverUI.SetActive(false);
@@ -43,7 +55,15 @@ public class PlayerStats : MonoBehaviour
         UpdateHPUI();
         UpdateExpUI();
         UpdateGrenadeUI();
+
+        // ✅ 캐릭터 스프라이트 가져오기
+        spriteRenderer = GetComponent<SpriteRenderer>();
+
+        // 🎵 AudioSource 자동 연결 (없으면 찾아서 할당)
+        if (audioSource == null)
+            audioSource = GetComponent<AudioSource>();
     }
+
     public void UpdateGrenadeUI()
     {
         if (grenadeText != null)
@@ -65,31 +85,83 @@ public class PlayerStats : MonoBehaviour
     private void LevelUp()
     {
         level++;
-        currentExp = 0; // ✅ 경험치 초기화
+        currentExp = 0; 
         expToNextLevel *= 1.5f;
 
         UpdateExpUI();
 
         Debug.Log($"레벨업! 현재 레벨: {level}");
 
-        // ✅ 레벨업 UI 열기
-        FindObjectOfType<LevelUpUI>().OpenUI(this);
+        FindFirstObjectByType<LevelUpUI>()?.OpenUI(this);
     }
 
     // === 데미지 처리 ===
     public void TakeDamage(float amount)
     {
+        if (isInvincible) return; // ✅ 무적 상태면 데미지 무시
+
         float finalDamage = Mathf.Max(amount - defense, 1f);
         currentHP -= finalDamage;
         UpdateHPUI();
 
-        if (currentHP <= 0) Die();
+        // 🎵 데미지 효과음 재생
+        if (audioSource != null && damageClip != null)
+            audioSource.PlayOneShot(damageClip);
+
+        if (currentHP <= 0)
+            Die();
+        else
+            StartCoroutine(InvincibilityRoutine()); // ✅ 무적 코루틴 시작
     }
+
+    // ✅ 무적 + 깜빡임 코루틴
+    // PlayerStats.cs 안 InvincibilityRoutine() 수정
+    private IEnumerator InvincibilityRoutine()
+    {
+        isInvincible = true;
+
+        Collider2D playerCol = GetComponent<Collider2D>();
+
+        // 🔹 무적 시작: 적과 충돌 무시
+        foreach (var enemy in GameObject.FindGameObjectsWithTag("Enemy"))
+        {
+            Collider2D enemyCol = enemy.GetComponent<Collider2D>();
+            if (enemyCol != null && playerCol != null)
+                Physics2D.IgnoreCollision(playerCol, enemyCol, true);
+        }
+
+        // 🔁 깜빡임
+        float elapsed = 0f;
+        while (elapsed < invincibleDuration)
+        {
+            if (spriteRenderer != null)
+                spriteRenderer.enabled = !spriteRenderer.enabled;
+
+            yield return new WaitForSeconds(blinkInterval);
+            elapsed += blinkInterval;
+        }
+
+        // 🔹 무적 끝: 다시 충돌 허용
+        foreach (var enemy in GameObject.FindGameObjectsWithTag("Enemy"))
+        {
+            Collider2D enemyCol = enemy.GetComponent<Collider2D>();
+            if (enemyCol != null && playerCol != null)
+                Physics2D.IgnoreCollision(playerCol, enemyCol, false);
+        }
+
+        if (spriteRenderer != null)
+            spriteRenderer.enabled = true;
+
+        isInvincible = false;
+    }
+
+
 
     private void Die()
     {
         Debug.Log("플레이어 사망!");
         if (gameOverUI != null)
+            FindFirstObjectByType<BGMManager>()?.PlayGameOverBGM();
             gameOverUI.SetActive(true);
 
         Time.timeScale = 0f;
@@ -119,18 +191,17 @@ public class PlayerStats : MonoBehaviour
     public void ReduceIncomingDamage(float value) => defense += value;
     public void ReduceReloadTime(float percent) => reloadSpeed *= (1f - percent);
     public void IncreaseGrenade(int amount) => grenadeCount += amount;
- public void IncreaseHealth(float value)
-{
-    maxHP += value;
 
-    // 현재 체력도 같이 늘려서 비율 유지
-    currentHP += value;
+    public void IncreaseHealth(float value)
+    {
+        maxHP += value;
 
-    // currentHP가 maxHP보다 클 경우 보정
-    if (currentHP > maxHP)
-        currentHP = maxHP;
+        // 현재 체력도 같이 늘려서 비율 유지
+        currentHP += value;
 
-    UpdateHPUI();
-}
+        if (currentHP > maxHP)
+            currentHP = maxHP;
 
+        UpdateHPUI();
+    }
 }

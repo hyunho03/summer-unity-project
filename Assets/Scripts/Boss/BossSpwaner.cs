@@ -71,6 +71,8 @@ public class BossSpawner : MonoBehaviour
                 bossHpSlider.value = bw.MaxHealth;
             }
         }
+        // 🔊 보스 등장 시 BGM 교체
+        FindFirstObjectByType<BGMManager>()?.PlayBossBGM();
 
         Debug.Log("보스 소환!");
     }

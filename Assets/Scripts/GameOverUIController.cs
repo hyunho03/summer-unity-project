@@ -11,4 +11,13 @@ public class GameOverUIController : MonoBehaviour
         // 현재 활성화된 씬 다시 로드
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
+
+    public void GoToTitle()
+    {
+        // 게임 시간 정상화
+        Time.timeScale = 1f;
+
+        // Title 씬으로 이동 (씬 이름이 정확히 "Title"이어야 함)
+        SceneManager.LoadScene("Title");
+    }
 }

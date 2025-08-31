@@ -12,6 +12,10 @@ public class Grenade : MonoBehaviour
     [SerializeField] private GameObject explosionPrefab;        // 폭발 이펙트 프리팹
     [SerializeField] private float explodeDelay = 0f;     // 폭발 지연(초)
 
+    [Header("Audio")]
+    [SerializeField] private AudioClip explosionClip;  // 폭발 효과음
+    [SerializeField] private AudioSource audioSource;  // 재생기 (선택)
+
     private Rigidbody2D rb;
     private Collider2D col;
 
@@ -72,9 +76,13 @@ public class Grenade : MonoBehaviour
         if (explodeDelay > 0f)
             yield return new WaitForSeconds(explodeDelay);
 
-        // 폭발 이펙트 생성 (null 체크)
+        // 폭발 이펙트 생성
         if (explosionPrefab != null)
             Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+
+        // 🎵 폭발 효과음 재생
+        if (audioSource != null && explosionClip != null)
+            AudioSource.PlayClipAtPoint(explosionClip, transform.position, 3.0f);
 
         // 범위 데미지 처리
         Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, explodeRadius);
@@ -84,10 +92,13 @@ public class Grenade : MonoBehaviour
             if (dmg != null)
                 dmg.TakeDamage(50);
         }
+        if (explosionClip != null)
+            AudioSource.PlayClipAtPoint(explosionClip, transform.position);
 
-        // 수류탄 삭제
+        // 수류탄 삭제 (효과음이 다 끝나기 전에 삭제되면 안 들릴 수 있음 → 아래 팁 참고)
         Destroy(gameObject);
     }
+
 
     // 디버그: 폭발 범위 시각화
     void OnDrawGizmosSelected()
